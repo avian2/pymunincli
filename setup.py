@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 #
-# Copyright © 2012  Julien Danjou <julien@danjou.info>
+# Copyright (c) 2012  Julien Danjou <julien@danjou.info>
+# Copyright (c) 2016  Tomaz Solc <tomaz.solc@tablix.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,11 +23,11 @@ import setuptools
 setuptools.setup(
     name="pymunincli",
     version="0.2",
-    author="Julien Danjou",
-    author_email="julien@danjou.info",
+    author="Tomaz Solc",
+    author_email="tomaz.solc@tablix.org",
     description="munin client library",
     license="GPL",
-    url="http://julien.danjou.info/software/pymunincli/",
+    url="https://github.com/avian2/pymunincli",
     packages=['munin'],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
