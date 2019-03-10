@@ -17,11 +17,15 @@
 
 import unittest
 
-import SocketServer
+try:
+	import socketserver
+except ImportError:
+	import SocketServer as socketserver
+
 import threading
 from munin.client import Client, ClientError, _itergraph
 
-class MockServer(SocketServer.TCPServer):
+class MockServer(socketserver.TCPServer):
     allow_reuse_address = True
 
 class TestIterGraph(unittest.TestCase):
@@ -65,7 +69,7 @@ class TestClient(unittest.TestCase):
         # Munin node just closes connection if source address is not
         # allowed access.
 
-        class MockDeniedHandler(SocketServer.BaseRequestHandler):
+        class MockDeniedHandler(socketserver.BaseRequestHandler):
             def handle(self):
                 self.request.close()
 
@@ -75,15 +79,15 @@ class TestClient(unittest.TestCase):
         self.assertRaises(ClientError, c.connect)
 
     def test_list(self):
-        class MockListHandler(SocketServer.BaseRequestHandler):
+        class MockListHandler(socketserver.BaseRequestHandler):
             def handle(self):
                 f = self.request.makefile()
 
-                self.request.sendall("mock\n")
+                self.request.sendall(b"mock\n")
                 f.readline()
-                self.request.sendall("cap multigraph\n")
+                self.request.sendall(b"cap multigraph\n")
                 f.readline()
-                self.request.sendall("foo bar\n")
+                self.request.sendall(b"foo bar\n")
 
         self._mock(MockListHandler)
 
@@ -93,19 +97,19 @@ class TestClient(unittest.TestCase):
         self.assertEqual(c.list(), ['foo', 'bar'])
 
     def test_fetch_multigraph(self):
-        class MockFetchHandler(SocketServer.BaseRequestHandler):
+        class MockFetchHandler(socketserver.BaseRequestHandler):
             def handle(self):
                 f = self.request.makefile()
 
-                self.request.sendall("mock\n")
+                self.request.sendall(b"mock\n")
                 f.readline()
-                self.request.sendall("cap multigraph\n")
+                self.request.sendall(b"cap multigraph\n")
                 f.readline()
-                self.request.sendall("multigraph foo_1\n")
-                self.request.sendall("x.value 1\n")
-                self.request.sendall("multigraph foo_2\n")
-                self.request.sendall("y.value 2\n")
-                self.request.sendall(".\n")
+                self.request.sendall(b"multigraph foo_1\n")
+                self.request.sendall(b"x.value 1\n")
+                self.request.sendall(b"multigraph foo_2\n")
+                self.request.sendall(b"y.value 2\n")
+                self.request.sendall(b".\n")
 
         self._mock(MockFetchHandler)
 
@@ -115,16 +119,16 @@ class TestClient(unittest.TestCase):
         self.assertEqual(c.fetch("foo"), {'foo_1': {'x': 1.0}, 'foo_2': {'y': 2.0}})
 
     def test_fetch(self):
-        class MockFetchHandler(SocketServer.BaseRequestHandler):
+        class MockFetchHandler(socketserver.BaseRequestHandler):
             def handle(self):
                 f = self.request.makefile()
 
-                self.request.sendall("mock\n")
+                self.request.sendall(b"mock\n")
                 f.readline()
-                self.request.sendall("cap multigraph\n")
+                self.request.sendall(b"cap multigraph\n")
                 f.readline()
-                self.request.sendall("x.value 1\n")
-                self.request.sendall(".\n")
+                self.request.sendall(b"x.value 1\n")
+                self.request.sendall(b".\n")
 
         self._mock(MockFetchHandler)
 
@@ -134,17 +138,17 @@ class TestClient(unittest.TestCase):
         self.assertEqual(c.fetch("foo"), {'foo': {'x': 1.0}})
 
     def test_config(self):
-        class MockConfigHandler(SocketServer.BaseRequestHandler):
+        class MockConfigHandler(socketserver.BaseRequestHandler):
             def handle(self):
                 f = self.request.makefile()
 
-                self.request.sendall("mock\n")
+                self.request.sendall(b"mock\n")
                 f.readline()
-                self.request.sendall("cap multigraph\n")
+                self.request.sendall(b"cap multigraph\n")
                 f.readline()
-                self.request.sendall("graph_info foo\n")
-                self.request.sendall("x.info bar\n")
-                self.request.sendall(".\n")
+                self.request.sendall(b"graph_info foo\n")
+                self.request.sendall(b"x.info bar\n")
+                self.request.sendall(b".\n")
 
         self._mock(MockConfigHandler)
 

@@ -21,7 +21,7 @@
 #
 
 import socket
-from itertools import groupby, imap
+from itertools import groupby
 from operator import itemgetter
 
 def _itergraph(plugin, i):
@@ -34,7 +34,7 @@ def _itergraph(plugin, i):
                 yield graph, line
 
     for graph, graph_line in groupby(itergraph(), key=itemgetter(0)):
-        yield graph, imap(itemgetter(1), graph_line)
+        yield graph, map(itemgetter(1), graph_line)
 
 class ClientError(Exception):
     pass
@@ -49,11 +49,11 @@ class Client(object):
         self._connection = socket.create_connection((self.host, self.port))
         self.hello_string = self._readline()
 
-        self._connection.sendall("cap multigraph\n")
+        self._connection.sendall(b"cap multigraph\n")
         self.cap_list = self._readline().split()[1:]
 
     def list(self):
-        self._connection.sendall("list\n")
+        self._connection.sendall(b"list\n")
         return self._readline().split(' ')
 
     def _readline(self):
@@ -62,7 +62,7 @@ class Client(object):
             if not s:
                 raise ClientError("server unexpectedly closed connection")
 
-            self.buffer += s
+            self.buffer += s.decode('ascii')
 
         r, self.buffer = self.buffer.split('\n', 1)
         return r.strip()
@@ -82,7 +82,7 @@ class Client(object):
         return _itergraph(key, self._iterline())
 
     def fetch(self, key):
-        self._connection.sendall("fetch %s\n" % key)
+        self._connection.sendall(b"fetch %s\n" % key.encode('ascii'))
         ret = {}
         for group, lines in self._itergraph(key):
             ret[group] = data = {}
@@ -97,7 +97,7 @@ class Client(object):
         return ret
 
     def config(self, key):
-        self._connection.sendall("config %s\n" % key)
+        self._connection.sendall(b"config %s\n" % key.encode('ascii'))
         ret = {}
         for group, lines in self._itergraph(key):
             ret[group] = data = {}
@@ -115,11 +115,11 @@ class Client(object):
         return ret
 
     def nodes(self):
-        self._connection.sendall("nodes\n")
+        self._connection.sendall(b"nodes\n")
         return [ line for line in self._iterline() ]
 
     def version(self):
-        self._connection.sendall("version\n")
+        self._connection.sendall(b"version\n")
         return self._readline()
 
 
