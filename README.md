@@ -9,6 +9,8 @@ monitored hosts on the network.
 PyMuninCli can be useful if you want to poll data from an existing Munin node
 into some other process, independent of Munin master.
 
+This version supports both Python 2.7 and Python 3.x.
+
 [1]: https://munin.readthedocs.org/en/latest/master/network-protocol.html
 
 
@@ -40,7 +42,7 @@ been modified by Tomaz Solc.
 
 Copyright (c) 2012  Julien Danjou <julien@danjou.info>
 
-Copyright (c) 2016  Tomaz Solc <tomaz.solc@tablix.org>
+Copyright (c) 2019  Tomaz Solc <tomaz.solc@tablix.org>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
