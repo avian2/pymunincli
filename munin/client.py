@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
+# vim:ts=4 sw=4 expandtab softtabstop=4
 #
 # munin.client - client for munin
 #
@@ -51,6 +52,9 @@ class Client(object):
 
         self._connection.sendall(b"cap multigraph\n")
         self.cap_list = self._readline().split()[1:]
+
+    def close(self):
+        self._connection.close()
 
     def list(self):
         self._connection.sendall(b"list\n")

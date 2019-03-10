@@ -78,6 +78,8 @@ class TestClient(unittest.TestCase):
         c = Client('localhost', port=9998)
         self.assertRaises(ClientError, c.connect)
 
+        c.close()
+
     def test_list(self):
         class MockListHandler(socketserver.BaseRequestHandler):
             def handle(self):
@@ -95,6 +97,8 @@ class TestClient(unittest.TestCase):
         c.connect()
 
         self.assertEqual(c.list(), ['foo', 'bar'])
+
+        c.close()
 
     def test_fetch_multigraph(self):
         class MockFetchHandler(socketserver.BaseRequestHandler):
@@ -118,6 +122,8 @@ class TestClient(unittest.TestCase):
 
         self.assertEqual(c.fetch("foo"), {'foo_1': {'x': 1.0}, 'foo_2': {'y': 2.0}})
 
+        c.close()
+
     def test_fetch(self):
         class MockFetchHandler(socketserver.BaseRequestHandler):
             def handle(self):
@@ -136,6 +142,8 @@ class TestClient(unittest.TestCase):
         c.connect()
 
         self.assertEqual(c.fetch("foo"), {'foo': {'x': 1.0}})
+
+        c.close()
 
     def test_config(self):
         class MockConfigHandler(socketserver.BaseRequestHandler):
@@ -156,6 +164,8 @@ class TestClient(unittest.TestCase):
         c.connect()
 
         self.assertEqual(c.config("foo"), {'foo': {'graph_info': 'foo', 'x': {'info': 'bar'}}})
+
+        c.close()
 
 if __name__ == "__main__":
     unittest.main()
