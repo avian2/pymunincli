@@ -22,7 +22,7 @@ import setuptools
 
 setuptools.setup(
     name="pymunincli",
-    version="0.2",
+    version="0.3",
     author="Tomaz Solc",
     author_email="tomaz.solc@tablix.org",
     description="munin client library",
